@@ -1,0 +1,4 @@
+---
+- name: install java
+  become: yes
+  yum: pkg=java-{{ java.version }}-openjdk state=installed

@@ -1,0 +1,9 @@
+galaxy_info:
+  author: Reform Programme
+  description: Install OpenJDK Java
+  company: HMCTS Reform Programme
+  license: MIT
+  min_ansible_version: 1.2
+
+dependencies:
+  - role: devops.repos

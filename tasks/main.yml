@@ -2,3 +2,7 @@
 - name: install java
   become: yes
   yum: pkg=java-{{ java.version }}-openjdk state=installed
+
+- name: install java devel tools
+  become: yes
+  yum: pkg=java-{{ java.version }}-openjdk-devel state=installed

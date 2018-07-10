@@ -3,11 +3,13 @@
   set_fact:
     javapkg_main: "java-{{ java.version }}-openjdk"
     javapkg_devel: "java-{{ java.version }}-openjdk-devel"
+    javapkg_headless: "java-{{ java.version }}-openjdk-headless"
 
 - name: Force specific version of java packages when requested
   set_fact:
      javapkg_main: "java-{{ java.version }}-openjdk-{{ java.minver }}"
      javapkg_devel: "java-{{ java.version }}-openjdk-devel-{{ java.minver }}"
+     javapkg_headless: "java-{{ java.version }}-openjdk-headless-{{ java.minver }}"
   when: "java.minver is defined"
 
 - name: Show Java version which has been requested
@@ -16,12 +18,14 @@
 
 - name: Show name of the Java packages that are going to be installed
   debug:
-    msg: "javapkg_main={{ javapkg_main }} + javapkg_devel={{ javapkg_devel}}"
+    msg: "javapkg_main={{ javapkg_main }} + javapkg_devel={{ javapkg_devel}} + javapkg_headless={{ javapkg_headless }}"
 
-- name: install java main package
+- name: install java packages
   become: yes
-  yum: pkg={{ javapkg_main }} state=installed
-
-- name: install java devel package
-  become: yes
-  yum: pkg={{ javapkg_devel }} state=installed
+  yum:
+    name:
+      - "{{ javapkg_main }}"
+      - "{{ javapkg_devel }}"
+      - "{{ javapkg_headless }}"
+    state: installed
+    allow_downgrade: true

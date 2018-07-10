@@ -1,3 +1,8 @@
 ---
 java:
   version: 1.8.0
+
+# A specific version of Java can also be specified:
+#java:
+#  version: 1.8.0
+#  minver: 1.8.0.171-7.b10.el7

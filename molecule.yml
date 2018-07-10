@@ -18,3 +18,6 @@ docker:
 
 verifier:
   name: testinfra
+
+ansible:
+  playbook: tests/playbook.yml

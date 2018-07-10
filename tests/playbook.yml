@@ -1,0 +1,7 @@
+---
+- hosts: all
+  roles:
+    - role: java-role
+  vars:
+    java:
+      version: 1.8.0

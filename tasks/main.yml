@@ -1,8 +1,27 @@
 ---
-- name: install java
-  become: yes
-  yum: pkg=java-{{ java.version }}-openjdk state=installed
+- name: Define java package names
+  set_fact:
+    javapkg_main: "java-{{ java.version }}-openjdk"
+    javapkg_devel: "java-{{ java.version }}-openjdk-devel"
 
-- name: install java devel tools
+- name: Force specific version of java packages when requested
+  set_fact:
+     javapkg_main: "java-{{ java.version }}-openjdk-{{ java.minver }}"
+     javapkg_devel: "java-{{ java.version }}-openjdk-devel-{{ java.minver }}"
+  when: "java.minver is defined"
+
+- name: Show Java version which has been requested
+  debug:
+    msg: "java={{ java }}"
+
+- name: Show name of the Java packages that are going to be installed
+  debug:
+    msg: "javapkg_main={{ javapkg_main }} + javapkg_devel={{ javapkg_devel}}"
+
+- name: install java main package
   become: yes
-  yum: pkg=java-{{ java.version }}-openjdk-devel state=installed
+  yum: pkg={{ javapkg_main }} state=installed
+
+- name: install java devel package
+  become: yes
+  yum: pkg={{ javapkg_devel }} state=installed

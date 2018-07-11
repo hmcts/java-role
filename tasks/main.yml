@@ -20,7 +20,7 @@
   debug:
     msg: "javapkg_main={{ javapkg_main }} + javapkg_devel={{ javapkg_devel}} + javapkg_headless={{ javapkg_headless }}"
 
-- name: install java packages
+- name: Install java packages
   become: yes
   yum:
     name:
@@ -29,3 +29,38 @@
       - "{{ javapkg_headless }}"
     state: installed
     allow_downgrade: true
+
+- name: Find location of the Java binary
+  become: yes
+  shell: rpm -ql java-{{ java.version }}-openjdk-headless | grep /jre/bin/java$
+  register: javabin
+  changed_when: false
+
+- name: Show java binary corresponding to requested version
+  debug:
+    var: javabin.stdout
+
+- name: Make sure java command points to the correct version
+  alternatives:
+    name: java
+    path: "{{ javabin.stdout }}"
+  when: javabin.rc == 0
+
+- name: Get list of other versions of java which are installed
+  shell: rpm -qa | grep openjdk | grep -v java-{{ java.version }}-openjdk
+  register: otherjava
+  failed_when: false
+  changed_when: false
+  when: java_remove_other_versions == true
+
+- name: Show other versions of Java
+  debug:
+    var: otherjava.stdout_lines
+  when: java_remove_other_versions == true and otherjava.rc == 0
+
+- name: Remove other versions of Java if requested
+  become: yes
+  yum:
+    name: "{{ otherjava.stdout_lines }}"
+    state: absent
+  when: java_remove_other_versions == true and otherjava.rc == 0

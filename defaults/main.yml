@@ -6,3 +6,6 @@ java:
 #java:
 #  version: 1.8.0
 #  minver: 1.8.0.171-7.b10.el7
+
+# Java versions othar than the one requested will be removed if true
+java_remove_other_versions: true
